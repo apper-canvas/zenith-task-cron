@@ -2,15 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
-import * as taskService from '@/services/api/taskService';
+import * as taskService from '../../services/api/taskService';
 
-import AppHeader from '@/components/organisms/AppHeader';
-import KeyboardShortcutsModal from '@/components/organisms/KeyboardShortcutsModal';
-import LoadingSkeleton from '@/components/organisms/LoadingSkeleton';
-import ErrorMessage from '@/components/organisms/ErrorMessage';
-import TaskControls from '@/components/organisms/TaskControls';
-import TaskColumn from '@/components/organisms/TaskColumn';
-import ApperIcon from '@/components/ApperIcon'; // Used by AppHeader and TaskControls, but included here for completeness of context.
+import AppHeader from '../organisms/AppHeader';
+import KeyboardShortcutsModal from '../organisms/KeyboardShortcutsModal';
+import LoadingSkeleton from '../organisms/LoadingSkeleton';
+import ErrorMessage from '../organisms/ErrorMessage';
+import TaskControls from '../organisms/TaskControls';
+import TaskColumn from '../organisms/TaskColumn';
+import TaskFormModal from '../organisms/TaskFormModal';
+import ApperIcon from '../ApperIcon';
 
 const HomePage = () => {
   // State from Home.jsx
@@ -35,6 +36,22 @@ const HomePage = () => {
     priority: 'medium',
     column: 'today'
   });
+
+  // Move toggleFocusMode function declaration before useEffect that uses it
+  const toggleFocusMode = () => {
+    // Only activate focus mode if there are 'todo' tasks
+    if (!focusMode && tasks.filter(t => t.status === 'todo').length > 0) {
+      const nextTask = tasks.find(t => t.status === 'todo' && t.column === 'today') ||
+                      tasks.find(t => t.status === 'todo');
+      setCurrentFocusTaskId(nextTask?.id || null);
+      setFocusMode(true);
+      toast.success('Focus mode activated');
+    } else {
+      setFocusMode(false);
+      setCurrentFocusTaskId(null);
+      toast.success('Focus mode deactivated');
+    }
+  };
 
   // Keyboard shortcuts (combined from Home.jsx and MainFeature.jsx)
   useEffect(() => {
@@ -74,7 +91,7 @@ const HomePage = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showShortcuts, toggleFocusMode]); // Add toggleFocusMode to dependency array
+  }, [showShortcuts, toggleFocusMode]); // toggleFocusMode is now safely referenced
 
   // Load tasks
   useEffect(() => {
@@ -101,21 +118,6 @@ const HomePage = () => {
     }
   }, [showCreateForm]);
 
-  const toggleFocusMode = () => {
-    // Only activate focus mode if there are 'todo' tasks
-    if (!focusMode && tasks.filter(t => t.status === 'todo').length > 0) {
-      const nextTask = tasks.find(t => t.status === 'todo' && t.column === 'today') ||
-                      tasks.find(t => t.status === 'todo');
-      setCurrentFocusTaskId(nextTask?.id || null);
-      setFocusMode(true);
-      toast.success('Focus mode activated');
-    } else {
-      setFocusMode(false);
-      setCurrentFocusTaskId(null);
-      toast.success('Focus mode deactivated');
-    }
-  };
-
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTask.title.trim()) return;
@@ -141,6 +143,8 @@ const HomePage = () => {
   const handleCompleteTask = async (taskId) => {
     try {
       const task = tasks.find(t => t.id === taskId);
+      if (!task) return; // Defensive check
+      
       const updated = await taskService.update(taskId, {
         status: task.status === 'done' ? 'todo' : 'done',
         completedAt: task.status === 'done' ? null : new Date().toISOString()
@@ -210,8 +214,8 @@ const HomePage = () => {
 
   // Filter tasks
   const filteredTasks = tasks.filter(task =>
-    task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    task.description.toLowerCase().includes(searchQuery.toLowerCase())
+    task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    task.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const getPriorityColor = (priority) => {
