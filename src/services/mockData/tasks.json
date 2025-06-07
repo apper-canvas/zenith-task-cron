@@ -1,0 +1,52 @@
+[
+  {
+    "id": "1",
+    "title": "Review quarterly performance metrics",
+    "description": "Analyze Q4 data and prepare summary for board meeting",
+    "priority": "high",
+    "status": "todo",
+    "column": "today",
+    "createdAt": "2024-01-15T08:30:00.000Z",
+    "completedAt": null
+  },
+  {
+    "id": "2",
+    "title": "Update project documentation",
+    "description": "Revise technical specifications and user guides",
+    "priority": "medium",
+    "status": "todo",
+    "column": "today",
+    "createdAt": "2024-01-15T09:15:00.000Z",
+    "completedAt": null
+  },
+  {
+    "id": "3",
+    "title": "Schedule team retrospective",
+    "description": "Plan and coordinate sprint retrospective meeting",
+    "priority": "medium",
+    "status": "done",
+    "column": "today",
+    "createdAt": "2024-01-14T14:20:00.000Z",
+    "completedAt": "2024-01-15T10:45:00.000Z"
+  },
+  {
+    "id": "4",
+    "title": "Research new development tools",
+    "description": "Evaluate potential productivity improvements for the engineering team",
+    "priority": "low",
+    "status": "todo",
+    "column": "tomorrow",
+    "createdAt": "2024-01-15T11:00:00.000Z",
+    "completedAt": null
+  },
+  {
+    "id": "5",
+    "title": "Plan office relocation logistics",
+    "description": "Coordinate with facilities team for Q2 office move",
+    "priority": "critical",
+    "status": "todo",
+    "column": "someday",
+    "createdAt": "2024-01-14T16:30:00.000Z",
+    "completedAt": null
+  }
+]
