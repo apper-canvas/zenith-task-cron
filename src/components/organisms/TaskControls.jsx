@@ -1,8 +1,7 @@
 import React from 'react';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-
+import ApperIcon from '../ApperIcon';
+import Button from '../atoms/Button';
+import Input from '../atoms/Input';
 const TaskControls = ({
   searchQuery,
   setSearchQuery,
